@@ -1,0 +1,25 @@
+{
+  "name": "blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blanebussey/blog.git"
+  },
+  "author": "blane",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/blanebussey/blog/issues"
+  },
+  "homepage": "https://github.com/blanebussey/blog#readme",
+  "dependencies": {
+    "express": "^4.17.2",
+    "express-session": "^1.17.2",
+    "handlebars": "^4.7.7",
+    "sequelize": "^6.15.0"
+  }
+}
