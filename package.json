@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/blanebussey/blog#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.2",
     "express-session": "^1.17.2",
     "handlebars": "^4.7.7",
