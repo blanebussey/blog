@@ -1,13 +1,9 @@
 const router = require('express').Router();
 const { Post, User, Comment } = require('../models');
-const withAuth = require('../utils/auth');
 
-// get all posts for dashboard
-router.get('/', withAuth, (req, res) => {
+// get all posts for homepage
+router.get('/', (req, res) => {
   Post.findAll({
-    where: {
-      user_id: req.session.user_id
-    },
     attributes: [
       'id',
       'post_text',
@@ -31,7 +27,11 @@ router.get('/', withAuth, (req, res) => {
   })
     .then(dbPostData => {
       const posts = dbPostData.map(post => post.get({ plain: true }));
-      res.render('dashboard', { posts, loggedIn: true });
+
+      res.render('homepage', {
+        posts,
+        loggedIn: req.session.loggedIn
+      });
     })
     .catch(err => {
       console.log(err);
@@ -39,8 +39,12 @@ router.get('/', withAuth, (req, res) => {
     });
 });
 
-router.get('/edit/:id', withAuth, (req, res) => {
-  Post.findByPk(req.params.id, {
+// get single post
+router.get('/post/:id', (req, res) => {
+  Post.findOne({
+    where: {
+      id: req.params.id
+    },
     attributes: [
       'id',
       'post_text',
@@ -63,24 +67,31 @@ router.get('/edit/:id', withAuth, (req, res) => {
     ]
   })
     .then(dbPostData => {
-      if (dbPostData) {
-        const post = dbPostData.get({ plain: true });
-        console.log(post)
-        res.render('edit-post', {
-          post,
-          loggedIn: true
-        });
-      } else {
-        res.status(404).end();
+      if (!dbPostData) {
+        res.status(404).json({ message: 'No post found with this id' });
+        return;
       }
+
+      const post = dbPostData.get({ plain: true });
+
+      res.render('single-post', {
+        post,
+        loggedIn: req.session.loggedIn
+      });
     })
     .catch(err => {
+      console.log(err);
       res.status(500).json(err);
     });
 });
 
-router.get("/add", (req, res) => {
-  res.render("add-post", { loggedIn: true })
-})
+router.get('/login', (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect('/');
+    return;
+  }
+
+  res.render('login');
+});
 
 module.exports = router;
